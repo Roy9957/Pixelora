@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PIXELORA</title>
+
+  
+  <style>
+  
+  
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap');
+  
+  
+  
+  
+  body{
+    font-family: 'Playfair Display', serif;
+  }
+   .bot-container {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      display: flex;
+      gap: 200px;
+    }
+
+    .bot-head {
+      width: 60px;
+      height: 60px;
+      background: radial-gradient(circle at top left, #00EDFF, #FF0000);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+    }
+
+    .bot-head.bot2 {
+      background: radial-gradient(circle at top left, #00FF80, #FFD100);
+    }
+
+    /* Eyes */
+    .eyes {
+      width: 50%;
+      height: 15px;
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    .eye {
+      width: 12px;
+      height: 12px;
+      background: #000000;
+      border-radius: 50%;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0px 2px 5px rgba(0, 0, 0, 0.7);
+    }
+
+    .eye::before {
+      content: '';
+      width: 7px;
+      height: 7px;
+      background: white;
+      border-radius: 50%;
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      animation: eye-blink 3s infinite ease-in-out;
+    }
+
+    /* Bots looking at each other */
+    .bot1 .eye {
+      transform: translateX(7px);
+    }
+
+    .bot2 .eye {
+      transform: translateX(-7px);
+    }
+
+    /* Message container */
+    .chat-message {
+      position: absolute;
+      top: 70px;
+      left: 5%;
+      transform: translateX(-50%);
+      width: auto;
+      min-width: 100px;
+      max-width: 1200px;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 8px 12px;
+      font-size: 14px;
+      border-radius: 20px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+      animation: message-appear 1s ease-in-out forwards;
+      text-align: center;
+    }
+
+    /* Left and right message alignment */
+    .chat-message1 {
+      background: #00F4FF;
+    
+    }
+
+    .chat-message2 {
+      background: #003DFF;
+  
+    }
+
+    .chat-message-exit {
+      animation: message-exit 0s ease-in-out forwards;
+    }
+
+    /* Message animations */
+    @keyframes eye-blink {
+      0%, 90% {
+        transform: scaleY(1);
+      }
+      95% {
+        transform: scaleY(0.1);
+      }
+      100% {
+        transform: scaleY(1);
+      }
+    }
+
+    @keyframes message-appear {
+      0% {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes message-exit {
+      0% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bot-container">
+    <!-- Bot 1 -->
+    <div class="bot-head bot1" id="bot1">
+      <div class="eyes">
+        <div class="eye"></div>
+        <div class="eye"></div>
+      </div>
+    </div>
+
+    <!-- Bot 2 -->
+    <div class="bot-head bot2" id="bot2">
+      <div class="eyes">
+        <div class="eye"></div>
+        <div class="eye"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const bot1 = document.getElementById("bot1");
+    const bot2 = document.getElementById("bot2");
+
+    const messages = [
+      { bot: 1, text: "Are you use Pixelora?" },
+      { bot: 2, text: "Yes!I use this.And you?" },
+      { bot: 1, text: "Of course!I also use this." },
+      { bot: 2, text: "Oh!That's great." },
+      { bot: 1, text: "Yeah!" },
+      { bot: 2, text: "Nice!" },
+    ];
+
+    let messageIndex = 0;
+
+    function showMessage(bot, message) {
+      const messageElement = document.createElement("div");
+      messageElement.classList.add("chat-message");
+
+      if (bot === 1) {
+        messageElement.classList.add("chat-message1");
+      } else {
+        messageElement.classList.add("chat-message2");
+      }
+
+      messageElement.textContent = message;
+
+      if (bot === 1) {
+        bot1.appendChild(messageElement);
+      } else {
+        bot2.appendChild(messageElement);
+      }
+
+      // Remove the message after 3 seconds with animation
+      setTimeout(() => {
+        messageElement.classList.add("chat-message-exit");
+        setTimeout(() => messageElement.remove(), 1000);
+      }, 3000);
+    }
+
+    function startChat() {
+      if (messageIndex < messages.length) {
+        const currentMessage = messages[messageIndex];
+        showMessage(currentMessage.bot, currentMessage.text);
+
+        messageIndex++;
+        setTimeout(startChat, 4000); // Next message after 4 seconds (3 sec for message display, 1 sec for transition)
+      }
+    }
+
+    // Start the chat immediately
+    startChat();
+  </script>
+
+
+  
+  <style>
+    /* Your existing CSS styles here */
+body {
+  
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(to bottom right, #FF672F, #FF6A00);
+    }
+
+    .container {
+      width: 360px;
+      background: #fff;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+
+    .input-group {
+      margin: 20px 0;
+    }
+
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+      box-sizing: border-box;
+      border-color:#FF7000;
+      outline-color:#00FFE7;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #FF6A00;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+     
+    }
+
+    button:hover {
+      background: #00F3FF;
+    }
+
+    .switch {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .switch a {
+      color: #ff6a00;
+      text-decoration: none;
+    }
+
+     a{
+       cursor: default;
+     }
+     a:hover{
+       text-decoration:underline;
+       color: #00F3FF;
+     }
+
+    .error {
+      color: red;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    /* Add responsive styles */
+    @media (max-width: 480px) {
+      .container {
+        width: 90%;
+        padding: 30px;
+      }
+    }
+    /* Profile Bot and other styles */
+  </style>
+</head>
+
+<body>
+  <!-- Your existing HTML structure (bots, messages, etc.) -->
+
+  <div class="container">
+    <h2 id="form-title">Sign Up</h2>
+
+    <div class="input-group">
+      <input type="email" id="email" placeholder="Enter your email" required>
+    </div>
+
+    <div class="input-group">
+      <input type="password" id="password" placeholder="Enter your password" required>
+    </div>
+
+    <div class="input-group" id="password-confirm-group" style="display: block;">
+      <input type="password" id="password-confirm" placeholder="Confirm your password" required>
+    </div>
+
+    <button id="submit-btn">Sign Up</button>
+
+    <div class="error" id="error-message"></div>
+
+    <div class="switch">
+      <a href="javascript:void(0);" id="switch-btn">Already have an account? Login</a>
+    </div>
+  </div>
+
+  <script type="module">
+    // Import necessary Firebase modules
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyAfRqlmZ1dhxchlbV7kUSKA7YKK2UMcB2c",
+      authDomain: "pixelora-52447.firebaseapp.com",
+      projectId: "pixelora-52447",
+      storageBucket: "pixelora-52447.firebasestorage.app",
+      messagingSenderId: "884362596684",
+      appId: "1:884362596684:web:ac2863e42454050d2e7fe9"
+    };
+
+    // Initialize Firebase app
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Listen for changes in authentication state
+    onAuthStateChanged(auth, (user) => {
+      if (user && user.emailVerified) {
+        // If the user is authenticated and email is verified, redirect to "here.html"
+        window.location.href = "here.html";
+      }
+    });
+
+    // Sign-Up Function
+    async function signUp(email, password) {
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        await sendEmailVerification(user); // Send email verification
+        alert("Sign-up successful! Please verify your email.");
+      } catch (error) {
+        handleError(error); // Show custom error message
+      }
+    }
+
+    // Login Function
+    async function login(email, password) {
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        if (user.emailVerified) {
+          alert("Login successful!");
+          window.location.href = "here.html"; // Redirect to 'here.html'
+        } else {
+          alert("Please verify your email first!");
+        }
+      } catch (error) {
+        handleError(error); // Show custom error message
+      }
+    }
+
+    // Handle Error Messages
+    function handleError(error) {
+      let errorMessage = '';
+      switch (error.code) {
+        case 'auth/invalid-email':
+          errorMessage = 'The email address is not valid.';
+          break;
+        case 'auth/user-disabled':
+          errorMessage = 'This user has been disabled.';
+          break;
+        case 'auth/user-not-found':
+          errorMessage = 'No user found with this email address.';
+          break;
+        case 'auth/wrong-password':
+          errorMessage = 'Incorrect password. Please try again.';
+          break;
+        case 'auth/email-already-in-use':
+          errorMessage = 'This email is already in use. Please log in.';
+          break;
+        case 'auth/weak-password':
+          errorMessage = 'The password is too weak. Please choose a stronger password.';
+          break;
+        case 'auth/network-request-failed':
+          errorMessage = 'Network error. Please check your internet connection.';
+          break;
+        default:
+          errorMessage = 'An unknown error occurred. Please try again later.';
+      }
+      document.getElementById('error-message').textContent = errorMessage;
+    }
+
+    // Handle Submit Button (for Sign Up or Login)
+    document.getElementById("submit-btn").addEventListener("click", async () => {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      if (document.getElementById("form-title").textContent === "Sign Up") {
+        const passwordConfirm = document.getElementById("password-confirm").value;
+        if (password !== passwordConfirm) {
+          document.getElementById('error-message').textContent = "Passwords do not match!";
+          return;
+        }
+        await signUp(email, password);
+      } else {
+        await login(email, password);
+      }
+    });
+
+    // Switch between Login and Sign Up forms
+    document.getElementById("switch-btn").addEventListener("click", () => {
+      const isLogin = document.getElementById("form-title").textContent === "Login";
+      document.getElementById("form-title").textContent = isLogin ? "Sign Up" : "Login";
+      document.getElementById("submit-btn").textContent = isLogin ? "Sign Up" : "Login";
+      document.getElementById("password-confirm-group").style.display = isLogin ? "block" : "none";
+      document.getElementById("switch-btn").textContent = isLogin ? "Already have an account? Login" : "Don’t have an account? Sign Up";
+    });
+  </script>
+
+</body>
+</html>
