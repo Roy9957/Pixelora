@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 - Page Not Found</title>
+    <title>Pixelora - 404 Not Found</title>
     <style>
+        /* General body styling */
         body {
             margin: 0;
             padding: 0;
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
-            color: #fff;
             font-family: 'Arial', sans-serif;
             height: 100vh;
             display: flex;
@@ -17,46 +16,161 @@
             justify-content: center;
             flex-direction: column;
             text-align: center;
+            background: linear-gradient(135deg, #4b79a1, #283e51);
+            color: #fff;
             overflow: hidden;
         }
-        h1 {
-            font-size: 6rem;
-            margin: 0;
-            animation: pulse 2s infinite;
+
+        /* Animated background */
+        .background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #4b79a1, #283e51);
+            animation: backgroundShift 8s infinite alternate ease-in-out;
+            z-index: -1;
         }
-        p {
-            font-size: 1.5rem;
-            margin: 20px 0;
-        }
-        a {
-            display: inline-block;
-            padding: 10px 20px;
-            background: #ff6b6b;
-            color: #fff;
-            font-size: 1.2rem;
-            font-weight: bold;
-            text-decoration: none;
-            border-radius: 5px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            transition: background 0.3s, transform 0.3s;
-        }
-        a:hover {
-            background: #ff4757;
-            transform: translateY(-5px);
-        }
-        @keyframes pulse {
-            0%, 100% {
-                transform: scale(1);
+
+        @keyframes backgroundShift {
+            0% {
+                background: linear-gradient(135deg, #4b79a1, #283e51);
             }
             50% {
-                transform: scale(1.1);
+                background: linear-gradient(135deg, #ff6b6b, #ff4757);
+            }
+            100% {
+                background: linear-gradient(135deg, #2c3e50, #1abc9c);
+            }
+        }
+
+        /* Twinkling stars */
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        .stars div {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            animation: twinkle 2s infinite ease-in-out alternate;
+        }
+
+        @keyframes twinkle {
+            0%, 100% {
+                opacity: 0.5;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        /* Styling for content */
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            letter-spacing: 4px;
+            margin-bottom: 10px;
+            color: #ff6b6b;
+        }
+
+        h1 {
+            font-size: 5rem;
+            margin: 10px 0;
+            animation: glow 2.5s infinite alternate ease-in-out;
+        }
+
+        p {
+            font-size: 1.2rem;
+            margin: 20px 0;
+            line-height: 1.5;
+        }
+
+        a {
+            display: inline-block;
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            background: #ff4757;
+            color: #fff;
+            border-radius: 25px;
+            text-decoration: none;
+            transition: background 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        a:hover {
+            background: #e84118;
+            transform: translateY(-5px);
+        }
+
+        /* Glow effect */
+        @keyframes glow {
+            0%, 100% {
+                text-shadow: 0 0 10px #ff4757, 0 0 20px #ff6b6b, 0 0 30px #ff4757;
+            }
+            50% {
+                text-shadow: 0 0 20px #ff4757, 0 0 40px #ff6b6b, 0 0 60px #ff4757;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 2rem;
+            }
+            h1 {
+                font-size: 4rem;
+            }
+            p {
+                font-size: 1rem;
+            }
+            a {
+                font-size: 0.9rem;
+                padding: 10px 25px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 1.8rem;
+            }
+            h1 {
+                font-size: 3rem;
+            }
+            p {
+                font-size: 0.9rem;
+            }
+            a {
+                font-size: 0.8rem;
+                padding: 8px 20px;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Background animation -->
+    <div class="background"></div>
+
+    <!-- Stars animation -->
+    <div class="stars">
+        <div style="top: 15%; left: 25%; animation-duration: 2s;"></div>
+        <div style="top: 50%; left: 45%; animation-duration: 3s;"></div>
+        <div style="top: 75%; left: 35%; animation-duration: 4s;"></div>
+        <div style="top: 30%; left: 85%; animation-duration: 5s;"></div>
+        <div style="top: 65%; left: 15%; animation-duration: 6s;"></div>
+    </div>
+
+    <!-- Main content -->
+    <div class="logo">Pixelora</div>
     <h1>404</h1>
-    <p>Oops! We can't seem to find the page you're looking for.</p>
-    <a href="/">Take Me Home</a>
+    <p>Oops! The page you’re looking for doesn’t exist.</p>
+    <a href="/">Back to Homepage</a>
 </body>
 </html>
