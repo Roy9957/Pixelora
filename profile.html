@@ -4,245 +4,760 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pixelora Profile</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="icon" href="p.png" type="image/png">
-  >
   <style>
-  
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .notification-container {
+            position: fixed;
+            top: 20px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            z-index: 1000;
+            pointer-events: none;
+        }
+        
+        .notification {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            padding: 20px 30px;
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2), 
+                        0 5px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            max-width: 500px;
+            width: 90%;
+            transform: translateY(-150%);
+            animation: slideIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            pointer-events: auto;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .notification::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to right,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.1) 50%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            transform: translateX(-100%);
+            animation: shine 3s infinite;
+        }
+        
+        .notification:hover {
+            transform: translateY(0) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .notification:hover::before {
+            animation: shine 0.8s infinite;
+        }
+        
+        .notification-icon {
+            font-size: 28px;
+            margin-right: 15px;
+            flex-shrink: 0;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .notification-content {
+            flex-grow: 1;
+        }
+        
+        .notification-title {
+            font-weight: 700;
+            font-size: 18px;
+            margin-bottom: 5px;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+        
+        .notification-message {
+            font-weight: 400;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 0 0 16px 16px;
+            overflow: hidden;
+        }
+        
+        .progress-bar-inner {
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(90deg, #00dbde 0%, #fc00ff 100%);
+            animation: progress 5s linear forwards;
+            border-radius: 0 0 16px 16px;
+        }
+        
+        .close-btn {
+            margin-left: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+        
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+        
+        @keyframes slideIn {
+            to {
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes progress {
+            from {
+                width: 100%;
+            }
+            to {
+                width: 0%;
+            }
+        }
+        
+        @keyframes shine {
+            to {
+                transform: translateX(100%);
+            }
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .notification {
+                padding: 15px 20px;
+                border-radius: 12px;
+            }
+            
+            .notification-icon {
+                font-size: 24px;
+                margin-right: 12px;
+            }
+            
+            .notification-title {
+                font-size: 16px;
+            }
+            
+            .notification-message {
+                font-size: 13px;
+            }
+        }
+    </style>
 
-    .notification {
-      position: fixed;
-      top: -120px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: linear-gradient(45deg, #ff7b54, #ff4d00);
-      color: #fff;
-      padding: 20px 25px;
-      border-radius: 10px;
-      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      cursor: pointer;
-      width: 90%;
-      max-width: 450px;
-      animation: slideDown 0.8s ease-out forwards, fadeOut 5s ease-in forwards;
-      transition: transform 0.3s ease;
-    }
-
-    .notification p {
-      font-size: 18px;
-      font-weight: 600;
-      margin: 0;
-      text-align: center;
-      line-height: 1.5;
-    }
-
-    .progress-bar {
-      position: absolute;
-      bottom: 5px;
-      left: 20px;
-      height: 6px;
-      background-color: #fff;
-      width: 90%;
-      border-radius: 5px;
-      overflow: hidden;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .progress-bar-inner {
-      height: 150%;
-      background: #00FFF9;
-      border-radius: 5px;
-      animation: progressAnimation 5s linear forwards;
-    }
-
-    @keyframes slideDown {
-      from {
-        top: -120px;
-        opacity: 0;
-      }
-      to {
-        top: 0px;
-        opacity: 1;
-      }
-    }
-
-    @keyframes fadeOut {
-      0%, 80% {
-        opacity: 1;
-      }
-      100% {
-        opacity: 0;
-      }
-    }
-
-    @keyframes progressAnimation {
-      from {
-        width: 100%;
-      }
-      to {
-        width: 0%;
-      }
-    }
-
-    .notification:hover {
-      transform: translateX(-50%) translateY(-5px);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.71);
-    }
-  </style>
-
-<a href="PIXELORA.apk" download>  <div id="notification" class="notification">
-    <p>🎉 Download Pixelora App.Tap to Download.</p>
-    <div class="progress-bar">
-      <div class="progress-bar-inner"></div>
+    <div class="notification-container">
+        <a href="PIXELORA.apk" download style="text-decoration: none; color: inherit;">
+            <div class="notification" id="notification">
+                <div class="notification-icon">🎉</div>
+                <div class="notification-content">
+                    <div class="notification-title">Pixelora App Available!</div>
+                    <div class="notification-message">Tap to download the latest version</div>
+                </div>
+                <div class="close-btn" id="closeBtn">×</div>
+                <div class="progress-bar">
+                    <div class="progress-bar-inner"></div>
+                </div>
+            </div>
+        </a>
     </div>
-  </div></a>
-<script>
+
+    <script>
+        const notification = document.getElementById('notification');
+        const closeBtn = document.getElementById('closeBtn');
+        
+        // Close notification when close button is clicked
+        closeBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            notification.style.animation = 'none';
+            notification.style.transform = 'translateY(-150%)';
+            notification.style.transition = 'transform 0.5s ease-in-out';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 500);
+        });
+        
+        // Auto-hide the notification after 5 seconds
+        setTimeout(() => {
+            notification.style.animation = 'none';
+            notification.style.transform = 'translateY(-150%)';
+            notification.style.transition = 'transform 0.5s ease-in-out';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 500);
+        }, 5000);
+        
+        // Add pulse animation on hover
+        notification.addEventListener('mouseenter', () => {
+            notification.style.animation = 'pulse 1.5s infinite';
+        });
+        
+        notification.addEventListener('mouseleave', () => {
+            notification.style.animation = 'none';
+        });
+    </script>
   
-
-  // Auto-hide the notification after 5 seconds
-  setTimeout(() => {
-    const notification = document.getElementById("notification");
-    notification.style.display = "none";
-  }, 5000);
-</script>
-
+  
   <style>
-  
-  
-  
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap');
-  
-  
-  
-    body {
-
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap');
+    
+    :root {
+      --primary: #FF0000;
+      --secondary: #00F3FF;
+      --dark-bg: #121212;
+      --dark-card: #1E1E1E;
+      --light-bg: #FFFFFF;
+      --light-card: #F8F9FA;
+      --text-light: #333333;
+      --text-dark: #FFFFFF;
+    }
+    
+    * {
       margin: 0;
-      
       padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      background: linear-gradient(to bottom right, #FF0000, #FF0000);
-      transition: background 0.5s ease, color 0.5s ease;
+      background: linear-gradient(135deg, var(--primary) 0%, #8E2DE2 100%);
+      transition: all 0.5s ease;
+      color: var(--text-light);
     }
-   
-  
-  .ptt{
     
-    font-size: 26px;
-    font-weight: bold;
-    color: #d35400;
-  }
-   
-   
-   
-   
-
+    body.dark {
+      background: linear-gradient(135deg, #000000 0%, #434343 100%);
+      color: var(--text-dark);
+    }
+    
     .profile-container {
-      width: 360px;
-      background: #FFFFFF;
-      padding: 40px;
-      border-radius: 10px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 420px;
+      background: var(--light-card);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
       text-align: center;
-      transition: background 0.5s ease, color 0.5s ease;
+      transition: all 0.5s ease;
+      position: relative;
+      overflow: hidden;
+      margin: 20px;
     }
-
-    a {
-      cursor: default;
+    
+    body.dark .profile-container {
+      background: var(--dark-card);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
     }
-
-    .profile-container p {
-      color: #FF0000;
-      font-size: 16px;
+    
+    .profile-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 8px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
     }
-
-    .logout-btn {
-      margin-top: 20px;
-      padding: 10px 20px;
-      background: #FF0000;
-      color: white;
-      border: none;
+    
+    .profile-header {
+      margin-bottom: 25px;
+      position: relative;
+    }
+    
+    .profile-pic {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 5px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background-color: #f0f0f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 15px;
+      font-size: 40px;
+      color: var(--primary);
+    }
+    
+    body.dark .profile-pic {
+      background-color: #333;
+    }
+    
+    .profile-pic:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    }
+    
+    .profile-name {
+      font-size: 24px;
+      font-weight: 600;
+      margin: 10px 0 5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-block;
+      padding: 5px 10px;
       border-radius: 5px;
-      transition: background 0.3s ease;
     }
-
-    .logout-btn:hover {
-      background: #00F3FF;
+    
+    .profile-name:hover {
+      background: rgba(0, 0, 0, 0.05);
     }
-
-    #v{
-      font-size: 18px;
-      color: #FF0000;
-      margin-right: 400px;
+    
+    body.dark .profile-name:hover {
+      background: rgba(255, 255, 255, 0.1);
     }
-
-    #v:hover {
-      text-decoration: underline;
+    
+    .profile-email {
+      color: var(--primary);
+      font-size: 16px;
+      margin-bottom: 20px;
+      word-break: break-all;
     }
-
+    
+    .profile-id {
+      background: rgba(0, 0, 0, 0.05);
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-size: 14px;
+      margin-bottom: 20px;
+      display: inline-block;
+      color: #666;
+    }
+    
+    body.dark .profile-id {
+      background: rgba(255, 255, 255, 0.1);
+      color: #ccc;
+    }
+    
+    .profile-details {
+      text-align: left;
+      margin: 20px 0;
+    }
+    
+    .detail-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+    
+    body.dark .detail-item {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .detail-label {
+      font-weight: 500;
+      color: #666;
+    }
+    
+    body.dark .detail-label {
+      color: #aaa;
+    }
+    
+    .detail-value {
+      font-weight: 400;
+    }
+    
+    .action-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 25px;
+    }
+    
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 30px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: #cc0000;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(255, 0, 0, 0.3);
+    }
+    
+    .btn-secondary {
+      background: var(--secondary);
+      color: #000;
+    }
+    
+    .btn-secondary:hover {
+      background: #00d9e6;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 243, 255, 0.3);
+    }
+    
     .theme-toggle {
       position: absolute;
       top: 20px;
       right: 20px;
+      background: rgba(0, 0, 0, 0.1);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 10;
+      color: var(--text-light);
+    }
     
-      font-size: 24px;
-      color: white;
-      transition: color 0.3s ease;
-    }
-
-    body.dark {
-      background: linear-gradient(to bottom right, #000000, #000000);
-      color: white;
-    }
-
-
-    body.dark .profile-container {
-      background: #000000;
-      color: white;
-    }
-
-    body.dark .logout-btn {
-      background: #00FFED;
-      color: #000000;
-    }
-
-    body.dark .logout-btn:hover {
-      background: #FF1000;
-    }
-
     body.dark .theme-toggle {
-      color: #00FFF9;
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-dark);
+    }
+    
+    .theme-toggle:hover {
+      transform: rotate(30deg) scale(1.1);
+    }
+    
+    .back-btn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      color: var(--text-light);
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 10;
+    }
+    
+    body.dark .back-btn {
+      color: var(--text-dark);
+    }
+    
+    .back-btn:hover {
+      transform: translateX(-5px);
+    }
+    
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .modal-content {
+      background: var(--light-card);
+      padding: 25px;
+      border-radius: 15px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      position: relative;
+    }
+    
+    body.dark .modal-content {
+      background: var(--dark-card);
+    }
+    
+    .close-modal {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      font-size: 24px;
+      cursor: pointer;
+      color: #666;
+    }
+    
+    body.dark .close-modal {
+      color: #aaa;
+    }
+    
+    .modal-title {
+      margin-bottom: 20px;
+      color: var(--primary);
+      font-size: 20px;
+      font-weight: 600;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+    
+    body.dark .form-control {
+      background: #2a2a2a;
+      border-color: #444;
+      color: white;
+    }
+    
+    .form-control:focus {
+      border-color: var(--primary);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.1);
+    }
+    
+    .save-btn {
+      width: 100%;
+      padding: 12px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .save-btn:hover {
+      background: #cc0000;
+      transform: translateY(-2px);
+    }
+    
+    /* File input styling */
+    .file-input-wrapper {
+      position: relative;
+      overflow: hidden;
+      display: inline-block;
+      width: 100%;
+    }
+    
+    .file-input-button {
+      width: 100%;
+      padding: 12px;
+      background: var(--secondary);
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+    }
+    
+    .file-input-button:hover {
+      background: #00d9e6;
+    }
+    
+    .file-input-wrapper input[type="file"] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 480px) {
+      .profile-container {
+        padding: 20px;
+      }
+      
+      .profile-pic {
+        width: 100px;
+        height: 100px;
+        font-size: 30px;
+      }
+      
+      .profile-name {
+        font-size: 20px;
+      }
+      
+      .action-buttons {
+        flex-direction: column;
+        gap: 10px;
+      }
+      
+      .btn {
+        width: 100%;
+      }
     }
   </style>
 </head>
 
 <body>
-  <i class="fas fa-moon theme-toggle" id="theme-toggle"></i>
+  <a href="here.html" class="back-btn"><i class="fas fa-arrow-left"></i></a>
+  <div class="theme-toggle" id="theme-toggle">
+    <i class="fas fa-moon"></i>
+  </div>
+  
   <div class="profile-container">
-    <strong>Email</strong>
-    <p class="ptt" id="profile-email">pixelora@ai.com</p>
-    <button class="logout-btn" id="logout-btn">Logout</button><br><br>
-    <a href="here.html"><i id="v" class="fas fa-reply"></i></a>
+    <div class="profile-header">
+      <div class="profile-pic" id="profile-pic">
+        <i class="fas fa-user"></i>
+      </div>
+      <h1 class="profile-name" id="profile-name">User Name</h1>
+      <p class="profile-email" id="profile-email">user@example.com</p>
+      <span class="profile-id" id="profile-id">ID: loading...</span>
+    </div>
+    
+    <div class="profile-details">
+      <div class="detail-item">
+        <span class="detail-label">Member Since</span>
+        <span class="detail-value" id="member-since">Loading...</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Last Login</span>
+        <span class="detail-value" id="last-login">Loading...</span>
+      </div>
+    </div>
+    
+    <div class="action-buttons">
+      <button class="btn btn-secondary" id="edit-profile-btn">
+        <i class="fas fa-edit"></i> Edit Profile
+      </button>
+      <button class="btn btn-primary" id="logout-btn">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </button>
+    </div>
+  </div>
+  
+  <!-- Edit Profile Modal -->
+  <div class="modal" id="edit-modal">
+    <div class="modal-content">
+      <span class="close-modal" id="close-modal">&times;</span>
+      <h2 class="modal-title">Edit Profile</h2>
+      
+      <div class="form-group">
+        <label for="edit-name">Display Name</label>
+        <input type="text" id="edit-name" class="form-control" placeholder="Enter your name">
+      </div>
+      
+      <div class="form-group">
+        <label>Profile Picture</label>
+        <div class="file-input-wrapper">
+          <button class="file-input-button">
+            <i class="fas fa-image"></i> Choose Image
+          </button>
+          <input type="file" id="profile-image" accept="image/*">
+        </div>
+      </div>
+      
+      <button class="save-btn" id="save-profile-btn">
+        <i class="fas fa-save"></i> Save Changes
+      </button>
+    </div>
   </div>
 
   <!-- Firebase SDKs -->
   <script type="module">
     // Import necessary functions from the Firebase SDKs
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+    import { 
+      getAuth, 
+      onAuthStateChanged, 
+      signOut,
+      updateProfile
+    } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+    import { 
+      getStorage,
+      ref,
+      uploadBytes,
+      getDownloadURL
+    } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-storage.js";
 
     // Your web app's Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyAfRqlmZ1dhxchlbV7kUSKA7YKK2UMcB2c",
       authDomain: "pixelora-52447.firebaseapp.com",
       projectId: "pixelora-52447",
-      storageBucket: "pixelora-52447.firebasestorage.app",
+      storageBucket: "pixelora-52447.appspot.com",
       messagingSenderId: "884362596684",
       appId: "1:884362596684:web:ac2863e42454050d2e7fe9"
     };
@@ -250,19 +765,130 @@
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    const storage = getStorage(app);
+
+    // DOM Elements
+    const themeToggle = document.getElementById('theme-toggle');
+    const logoutBtn = document.getElementById('logout-btn');
+    const editProfileBtn = document.getElementById('edit-profile-btn');
+    const editModal = document.getElementById('edit-modal');
+    const closeModal = document.getElementById('close-modal');
+    const saveProfileBtn = document.getElementById('save-profile-btn');
+    const editNameInput = document.getElementById('edit-name');
+    const profileImageInput = document.getElementById('profile-image');
+    const profilePicElement = document.getElementById('profile-pic');
+    const profileNameElement = document.getElementById('profile-name');
+    const profileEmailElement = document.getElementById('profile-email');
+    const profileIdElement = document.getElementById('profile-id');
+    const memberSinceElement = document.getElementById('member-since');
+    const lastLoginElement = document.getElementById('last-login');
+
+    // Theme toggle functionality
+    let isDark = localStorage.getItem('darkMode') === 'true';
+    
+    function applyTheme() {
+      if (isDark) {
+        document.body.classList.add('dark');
+        themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+      } else {
+        document.body.classList.remove('dark');
+        themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+      }
+    }
+    
+    applyTheme();
+    
+    themeToggle.addEventListener('click', () => {
+      isDark = !isDark;
+      localStorage.setItem('darkMode', isDark);
+      applyTheme();
+    });
+
+    // Generate or retrieve user ID
+    function getUserId() {
+      let userId = localStorage.getItem('pixeloraUserId');
+      
+      if (!userId) {
+        // Generate a new random ID
+        userId = 'px-' + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem('pixeloraUserId', userId);
+      }
+      
+      return userId;
+    }
 
     // Handle user state change
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        document.getElementById("profile-email").textContent = user.email;
+        // Set user email
+        profileEmailElement.textContent = user.email;
+        
+        // Set or generate user ID
+        profileIdElement.textContent = 'ID: ' + getUserId();
+        
+        // Set member since date
+        const memberSince = new Date(user.metadata.creationTime);
+        memberSinceElement.textContent = memberSince.toLocaleDateString();
+        
+        // Set last login date
+        const lastLogin = new Date(user.metadata.lastSignInTime);
+        lastLoginElement.textContent = lastLogin.toLocaleString();
+        
+        // Load profile data from local storage
+        loadProfileData(user.uid);
       } else {
         window.location.href = "index.html";
       }
     });
 
+    // Load profile data from local storage
+    function loadProfileData(userId) {
+      const profileData = JSON.parse(localStorage.getItem(`profile_${userId}`)) || {};
+      
+      if (profileData.name) {
+        profileNameElement.textContent = profileData.name;
+        editNameInput.value = profileData.name;
+      } else {
+        // Default to email prefix if no name is set
+        const emailPrefix = profileEmailElement.textContent.split('@')[0];
+        profileNameElement.textContent = emailPrefix;
+        editNameInput.value = emailPrefix;
+      }
+      
+      if (profileData.photoURL) {
+        if (profileData.photoURL.startsWith('data:')) {
+          // Local image
+          profilePicElement.innerHTML = '';
+          const img = document.createElement('img');
+          img.src = profileData.photoURL;
+          img.style.width = '100%';
+          img.style.height = '100%';
+          img.style.borderRadius = '50%';
+          img.style.objectFit = 'cover';
+          profilePicElement.appendChild(img);
+        } else {
+          // Firebase storage URL
+          profilePicElement.innerHTML = '';
+          const img = document.createElement('img');
+          img.src = profileData.photoURL;
+          img.style.width = '100%';
+          img.style.height = '100%';
+          img.style.borderRadius = '50%';
+          img.style.objectFit = 'cover';
+          profilePicElement.appendChild(img);
+        }
+      }
+    }
+
+    // Save profile data to local storage
+    function saveProfileData(userId, data) {
+      const currentData = JSON.parse(localStorage.getItem(`profile_${userId}`)) || {};
+      const newData = { ...currentData, ...data };
+      localStorage.setItem(`profile_${userId}`, JSON.stringify(newData));
+    }
+
     // Handle sign out
-    const logoutButton = document.getElementById("logout-btn");
-    logoutButton.addEventListener("click", () => {
+    logoutBtn.addEventListener('click', () => {
       signOut(auth).then(() => {
         window.location.href = "index.html";
       }).catch((error) => {
@@ -270,14 +896,81 @@
       });
     });
 
-    // Theme toggle functionality
-    const themeToggle = document.getElementById("theme-toggle");
-    let isDark = false;
+    // Modal controls
+    editProfileBtn.addEventListener('click', () => {
+      editModal.style.display = 'flex';
+    });
+    
+    closeModal.addEventListener('click', () => {
+      editModal.style.display = 'none';
+    });
+    
+    window.addEventListener('click', (e) => {
+      if (e.target === editModal) {
+        editModal.style.display = 'none';
+      }
+    });
 
-    themeToggle.addEventListener("click", () => {
-      document.body.classList.toggle("dark");
-      isDark = !isDark;
-      themeToggle.className = isDark ? "fas fa-sun theme-toggle" : "fas fa-moon theme-toggle";
+    // Handle profile image upload
+    profileImageInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          // Display preview
+          profilePicElement.innerHTML = '';
+          const img = document.createElement('img');
+          img.src = event.target.result;
+          img.style.width = '100%';
+          img.style.height = '100%';
+          img.style.borderRadius = '50%';
+          img.style.objectFit = 'cover';
+          profilePicElement.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // Save profile changes
+    saveProfileBtn.addEventListener('click', async () => {
+      const user = auth.currentUser;
+      if (!user) return;
+      
+      const newName = editNameInput.value.trim();
+      const file = profileImageInput.files[0];
+      
+      try {
+        // Update display name
+        if (newName && newName !== profileNameElement.textContent) {
+          await updateProfile(user, { displayName: newName });
+          profileNameElement.textContent = newName;
+          saveProfileData(user.uid, { name: newName });
+        }
+        
+        // Upload profile image if selected
+        if (file) {
+          // Store locally
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            saveProfileData(user.uid, { photoURL: event.target.result });
+          };
+          reader.readAsDataURL(file);
+          
+          // Optionally upload to Firebase Storage
+          /*
+          const storageRef = ref(storage, `profile_pictures/${user.uid}`);
+          await uploadBytes(storageRef, file);
+          const downloadURL = await getDownloadURL(storageRef);
+          await updateProfile(user, { photoURL: downloadURL });
+          saveProfileData(user.uid, { photoURL: downloadURL });
+          */
+        }
+        
+        editModal.style.display = 'none';
+      } catch (error) {
+        console.error("Error updating profile:", error);
+        alert("Error updating profile. Please try again.");
+      }
     });
   </script>
 </body>
