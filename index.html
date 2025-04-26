@@ -60,7 +60,7 @@
       position: absolute;
       top: -50%;
       left: -50%;
-      width: 100%;
+      width: 50%;
       height: 50%;
       background: linear-gradient(
         to bottom right,
@@ -226,7 +226,7 @@
     .theme-toggle {
       position: fixed;
       top: 15px;
-      
+      right: 15px;
       width: 44px;
       height: 44px;
       background: var(--card-color);
@@ -236,7 +236,7 @@
       align-items: center;
       cursor: pointer;
       box-shadow: 0 4px 12px var(--shadow-color);
-      z-index: 100;#42445A
+      z-index: 100;
       transition: all 0.3s ease;
     }
 
@@ -289,6 +289,31 @@
     .forgot-password a:hover {
       color: var(--secondary-color);
       text-decoration: underline;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      margin: 20px 0;
+      color: var(--text-color);
+      opacity: 0.7;
+      font-size: 0.9rem;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid var(--text-color);
+      opacity: 0.2;
+    }
+
+    .divider::before {
+      margin-right: 15px;
+    }
+
+    .divider::after {
+      margin-left: 15px;
     }
 
     /* Animations */
@@ -381,6 +406,8 @@
       <button class="social-btn google-btn" id="googleLogin"><i class="fab fa-google"></i></button>
     </div>
 
+    <div class="divider">or</div>
+
     <div class="input-group">
       <i class="fas fa-envelope"></i>
       <input type="email" id="email" placeholder="Enter your email" required>
@@ -432,7 +459,10 @@
       sendEmailVerification, 
       onAuthStateChanged,
       GoogleAuthProvider,
-      sendPasswordResetEmail
+      signInWithPopup,
+      sendPasswordResetEmail,
+      linkWithPopup,
+      updateProfile
     } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 
     // Firebase configuration
@@ -458,6 +488,7 @@
     const btnText = document.getElementById('btn-text');
     const spinner = document.getElementById('spinner');
     const forgotPasswordLink = document.getElementById('forgot-password-link');
+    const googleLoginBtn = document.getElementById('googleLogin');
 
     // Theme management
     function toggleTheme() {
@@ -493,6 +524,7 @@
       btnText.style.display = 'none';
       spinner.style.display = 'block';
       submitBtn.disabled = true;
+      googleLoginBtn.disabled = true;
     }
 
     // Hide loading state
@@ -500,6 +532,7 @@
       btnText.style.display = 'block';
       spinner.style.display = 'none';
       submitBtn.disabled = false;
+      googleLoginBtn.disabled = false;
     }
 
     // Handle error messages
@@ -537,6 +570,12 @@
           break;
         case 'auth/popup-closed-by-user':
           errorMessage = 'Login popup was closed before completion.';
+          break;
+        case 'auth/cancelled-popup-request':
+          errorMessage = 'Only one popup request is allowed at a time.';
+          break;
+        case 'auth/popup-blocked':
+          errorMessage = 'Popup was blocked by the browser. Please allow popups for this site.';
           break;
         default:
           errorMessage = 'An error occurred. Please try again.';
@@ -588,7 +627,7 @@
         }
         
         // Redirect on successful login
-        window.location.href = "here.html";
+        redirectToApp();
       } catch (error) {
         if (error.code === 'auth/email-not-verified') {
           handleError({ code: 'auth/email-not-verified', message: 'Please verify your email first. A new verification email has been sent.' });
@@ -600,15 +639,15 @@
       }
     }
 
-    // Social login handler
-    async function socialLogin(provider) {
+    // Google Sign-In/Sign-Up handler
+    async function handleGoogleAuth() {
       try {
         showLoading();
-        const result = await signInWithPopup(auth, provider);
+        const result = await signInWithPopup(auth, googleProvider);
         const user = result.user;
         
-        // Redirect on successful login
-        window.location.href = "here.html";
+        // Redirect on successful authentication
+        redirectToApp();
       } catch (error) {
         handleError(error);
       } finally {
@@ -627,6 +666,11 @@
       } finally {
         hideLoading();
       }
+    }
+
+    // Redirect to app after successful authentication
+    function redirectToApp() {
+      window.location.href = "here.html";
     }
 
     // Form submission handler
@@ -671,8 +715,8 @@
       document.getElementById("error-message").textContent = "";
     });
 
-    // Social login event listener
-    document.getElementById("googleLogin").addEventListener("click", () => socialLogin(googleProvider));
+    // Google authentication event listener
+    googleLoginBtn.addEventListener("click", handleGoogleAuth);
 
     // Forgot password
     forgotPasswordLink.addEventListener("click", async (e) => {
@@ -692,8 +736,12 @@
 
     // Check auth state
     onAuthStateChanged(auth, (user) => {
-      if (user && user.emailVerified) {
-        window.location.href = "here.html";
+      if (user) {
+        // Check if email is verified (only for email/password users)
+        if (user.providerData[0].providerId === 'password' && !user.emailVerified) {
+          return;
+        }
+        redirectToApp();
       }
     });
 
