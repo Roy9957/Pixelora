@@ -1,355 +1,439 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PIXELORA</title>
-<link rel="icon" href="p.png" type="image/png">
-  
+  <title>PIXELORA - Next Gen AI</title>
+  <link rel="icon" href="p.png" type="image/png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-  
-  
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap');
-  
-  
-  
-  
-  body{
-    font-family: 'Playfair Display', serif;
-  }
-   .bot-container {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      display: flex;
-      gap: 200px;
+    :root {
+      --primary-color: #FF672F;
+      --secondary-color: #00F3FF;
+      --accent-color: #FFBF00;
+      --bg-color: #f5f5f5;
+      --card-color: #ffffff;
+      --text-color: #333333;
+      --input-bg: #f8f8f8;
+      --shadow-color: rgba(0, 0, 0, 0.1);
+      --error-color: #ff4444;
+      --success-color: #00C851;
     }
 
-    .bot-head {
-      width: 60px;
-      height: 60px;
-      background: radial-gradient(circle at top left, #00EDFF, #FF0000);
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: relative;
-      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+    [data-theme="dark"] {
+      --primary-color: #FF8C5A;
+      --secondary-color: #00D4FF;
+      --accent-color: #FFD700;
+      --bg-color: #121212;
+      --card-color: #1e1e1e;
+      --text-color: #f0f0f0;
+      --input-bg: #2a2a2a;
+      --shadow-color: rgba(0, 0, 0, 0.3);
+      --error-color: #ff6b6b;
+      --success-color: #00E676;
     }
 
-    .bot-head.bot2 {
-      background: radial-gradient(circle at top left, #00FF80, #FFD100);
-    }
-
-    /* Eyes */
-    .eyes {
-      width: 50%;
-      height: 15px;
-      display: flex;
-      justify-content: space-between;
-      position: relative;
-    }
-
-    .eye {
-      width: 12px;
-      height: 12px;
-      background: #000000;
-      border-radius: 50%;
-      position: relative;
-      overflow: hidden;
-      box-shadow: inset 0px 2px 5px rgba(0, 0, 0, 0.7);
-    }
-
-    .eye::before {
-      content: '';
-      width: 7px;
-      height: 7px;
-      background: white;
-      border-radius: 50%;
-      position: absolute;
-      top: 2px;
-      left: 2px;
-      animation: eye-blink 3s infinite ease-in-out;
-    }
-
-    /* Bots looking at each other */
-    .bot1 .eye {
-      transform: translateX(7px);
-    }
-
-    .bot2 .eye {
-      transform: translateX(-7px);
-    }
-
-    /* Message container */
-    .chat-message {
-      position: absolute;
-      top: 70px;
-      left: 5%;
-      transform: translateX(-50%);
-      width: auto;
-      min-width: 100px;
-      max-width: 1200px;
-      background: rgba(0, 0, 0, 0.7);
-      color: white;
-      padding: 8px 12px;
-      font-size: 14px;
-      border-radius: 20px;
-      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
-      animation: message-appear 1s ease-in-out forwards;
-      text-align: center;
-    }
-
-    /* Left and right message alignment */
-    .chat-message1 {
-      background: #00F4FF;
-    
-    }
-
-    .chat-message2 {
-      background: #003DFF;
-  
-    }
-
-    .chat-message-exit {
-      animation: message-exit 0s ease-in-out forwards;
-    }
-
-    /* Message animations */
-    @keyframes eye-blink {
-      0%, 90% {
-        transform: scaleY(1);
-      }
-      95% {
-        transform: scaleY(0.1);
-      }
-      100% {
-        transform: scaleY(1);
-      }
-    }
-
-    @keyframes message-appear {
-      0% {
-        opacity: 0;
-        transform: translateY(-10px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @keyframes message-exit {
-      0% {
-        opacity: 1;
-      }
-      100% {
-        opacity: 0;
-        transform: translateY(-10px);
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="bot-container">
-    <!-- Bot 1 -->
-    <div class="bot-head bot1" id="bot1">
-      <div class="eyes">
-        <div class="eye"></div>
-        <div class="eye"></div>
-      </div>
-    </div>
-
-    <!-- Bot 2 -->
-    <div class="bot-head bot2" id="bot2">
-      <div class="eyes">
-        <div class="eye"></div>
-        <div class="eye"></div>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    const bot1 = document.getElementById("bot1");
-    const bot2 = document.getElementById("bot2");
-
-    const messages = [
-      { bot: 1, text: "Are you use Pixelora?" },
-      { bot: 2, text: "Yes!I use this.And you?" },
-      { bot: 1, text: "Of course!I also use this." },
-      { bot: 2, text: "Oh!That's great." },
-      { bot: 1, text: "Yeah!" },
-      { bot: 2, text: "Nice!" },
-    ];
-
-    let messageIndex = 0;
-
-    function showMessage(bot, message) {
-      const messageElement = document.createElement("div");
-      messageElement.classList.add("chat-message");
-
-      if (bot === 1) {
-        messageElement.classList.add("chat-message1");
-      } else {
-        messageElement.classList.add("chat-message2");
-      }
-
-      messageElement.textContent = message;
-
-      if (bot === 1) {
-        bot1.appendChild(messageElement);
-      } else {
-        bot2.appendChild(messageElement);
-      }
-
-      // Remove the message after 3 seconds with animation
-      setTimeout(() => {
-        messageElement.classList.add("chat-message-exit");
-        setTimeout(() => messageElement.remove(), 1000);
-      }, 3000);
-    }
-
-    function startChat() {
-      if (messageIndex < messages.length) {
-        const currentMessage = messages[messageIndex];
-        showMessage(currentMessage.bot, currentMessage.text);
-
-        messageIndex++;
-        setTimeout(startChat, 4000); // Next message after 4 seconds (3 sec for message display, 1 sec for transition)
-      }
-    }
-
-    // Start the chat immediately
-    startChat();
-  </script>
-
-
-  
-  <style>
-    /* Your existing CSS styles here */
-body {
-  
+    * {
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', 'Poppins', system-ui, -apple-system, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      background: linear-gradient(to bottom right, #FF672F, #FF6A00);
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: var(--text-color);
+      transition: all 0.5s ease;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 100%;
+      height: 50%;
+      background: linear-gradient(
+        to bottom right,
+        rgba(255, 255, 255, 0.1) 0%,
+        transparent 50%,
+        rgba(255, 255, 255, 0.1) 100%
+      );
+      transform: rotate(30deg);
+      animation: shine 8s infinite linear;
+      z-index: -1;
     }
 
     .container {
-      width: 360px;
-      background: #fff;
-      padding: 40px;
-      border-radius: 10px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      width: 92%;
+      max-width: 420px;
+      background: var(--card-color);
+      padding: 30px 25px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px var(--shadow-color);
+      position: relative;
+      overflow: hidden;
+      transform: translateY(20px);
+      opacity: 0;
+      animation: fadeInUp 0.6s 0.2s forwards;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      margin: 20px 0;
+    }
+
+    .container::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
     }
 
     h2 {
       text-align: center;
-      color: #333;
+      color: var(--text-color);
+      margin-bottom: 25px;
+      font-size: 1.8rem;
+      font-weight: 700;
+      position: relative;
+    }
+
+    h2::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 50px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+      border-radius: 2px;
     }
 
     .input-group {
       margin: 20px 0;
+      position: relative;
+    }
+
+    .input-group i {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--primary-color);
+      font-size: 1rem;
     }
 
     input[type="email"],
-    input[type="password"] {
+    input[type="password"],
+    input[type="text"] {
       width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border: 1px solid #ccc;
-      border-radius: 5px;
+      padding: 14px 15px 14px 45px;
+      margin: 6px 0;
+      border: 2px solid rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
       font-size: 16px;
       box-sizing: border-box;
-      border-color:#FF7000;
-      outline-color:#00FFE7;
+      background: var(--input-bg);
+      color: var(--text-color);
+      transition: all 0.3s ease;
+      box-shadow: inset 0 2px 5px var(--shadow-color);
+      -webkit-appearance: none;
+    }
+
+    input[type="email"]:focus,
+    input[type="password"]:focus,
+    input[type="text"]:focus {
+      border-color: var(--primary-color);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(255, 103, 47, 0.2);
     }
 
     button {
       width: 100%;
-      padding: 10px;
-      background: #FF6A00;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
       color: white;
       border: none;
-      border-radius: 5px;
+      border-radius: 10px;
       font-size: 16px;
-     
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 8px;
+      box-shadow: 0 5px 15px rgba(255, 103, 47, 0.3);
+      position: relative;
+      overflow: hidden;
     }
 
     button:hover {
-      background: #00F3FF;
+      transform: translateY(-2px);
+      box-shadow: 0 7px 18px rgba(255, 103, 47, 0.4);
+    }
+
+    button:active {
+      transform: translateY(0);
     }
 
     .switch {
       text-align: center;
       margin-top: 20px;
+      font-size: 0.9rem;
     }
 
     .switch a {
-      color: #ff6a00;
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .switch a:hover {
+      color: var(--secondary-color);
       text-decoration: none;
     }
 
-     a{
-       cursor: default;
-     }
-     a:hover{
-       text-decoration:underline;
-       color: #00F3FF;
-     }
-
     .error {
-      color: red;
+      color: var(--error-color);
       font-size: 14px;
       text-align: center;
+      margin-top: 8px;
+      min-height: 20px;
+      transition: all 0.3s ease;
     }
 
-    /* Add responsive styles */
-    @media (max-width: 480px) {
-      .container {
-        width: 90%;
-        padding: 30px;
+    .success {
+      color: var(--success-color);
+      font-size: 14px;
+      text-align: center;
+      margin-top: 8px;
+      min-height: 20px;
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 15px;
+      
+      width: 44px;
+      height: 44px;
+      background: var(--card-color);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px var(--shadow-color);
+      z-index: 100;#42445A
+      transition: all 0.3s ease;
+    }
+
+    .theme-toggle:hover {
+      transform: rotate(30deg) scale(1.1);
+    }
+
+    .social-login {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin: 20px 0;
+    }
+
+    .social-btn {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: var(--input-bg);
+      color: var(--text-color);
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 3px 8px var(--shadow-color);
+      border: none;
+    }
+
+    .social-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 12px var(--shadow-color);
+    }
+
+    .google-btn { color: #DB4437; }
+
+    .forgot-password {
+      text-align: right;
+      margin-top: -8px;
+      margin-bottom: 12px;
+    }
+
+    .forgot-password a {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-size: 0.8rem;
+      transition: all 0.3s ease;
+    }
+
+    .forgot-password a:hover {
+      color: var(--secondary-color);
+      text-decoration: underline;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
       }
     }
-    /* Profile Bot and other styles */
+
+    @keyframes shine {
+      to {
+        transform: rotate(30deg) translateX(100%);
+      }
+    }
+
+    /* Loading spinner */
+    .spinner {
+      display: none;
+      width: 22px;
+      height: 22px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+      margin: 0 auto;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Mobile landscape optimization */
+    @media screen and (max-height: 500px) and (orientation: landscape) {
+      .container {
+        transform: scale(0.9);
+        margin: 10px 0;
+        padding: 20px 15px;
+      }
+      
+      .input-group {
+        margin: 15px 0;
+      }
+      
+      h2 {
+        margin-bottom: 15px;
+        font-size: 1.6rem;
+      }
+    }
+
+    /* Very small devices */
+    @media (max-width: 360px) {
+      .container {
+        padding: 25px 15px;
+        border-radius: 14px;
+      }
+      
+      h2 {
+        font-size: 1.6rem;
+      }
+      
+      input[type="email"],
+      input[type="password"],
+      input[type="text"] {
+        padding: 12px 15px 12px 40px;
+        font-size: 15px;
+      }
+      
+      button {
+        padding: 13px;
+        font-size: 15px;
+      }
+    }
   </style>
 </head>
 
 <body>
-  <!-- Your existing HTML structure (bots, messages, etc.) -->
+  <div class="theme-toggle" id="themeToggle">
+    <i class="fas fa-moon"></i>
+  </div>
 
   <div class="container">
-    <h2 id="form-title">Sign Up</h2>
+    <h2 id="form-title"><i class="fas fa-user-plus"></i> Sign Up</h2>
+
+    <div class="social-login">
+      <button class="social-btn google-btn" id="googleLogin"><i class="fab fa-google"></i></button>
+    </div>
 
     <div class="input-group">
+      <i class="fas fa-envelope"></i>
       <input type="email" id="email" placeholder="Enter your email" required>
     </div>
 
     <div class="input-group">
+      <i class="fas fa-lock"></i>
       <input type="password" id="password" placeholder="Enter your password" required>
     </div>
 
-    <div class="input-group" id="password-confirm-group" style="display: block;">
+    <div class="input-group" id="password-confirm-group">
+      <i class="fas fa-lock"></i>
       <input type="password" id="password-confirm" placeholder="Confirm your password" required>
     </div>
 
-    <button id="submit-btn">Sign Up</button>
+    <div class="input-group" id="username-group" style="display: none;">
+      <i class="fas fa-user"></i>
+      <input type="text" id="username" placeholder="Choose a username" required>
+    </div>
+
+    <div class="forgot-password" id="forgot-password" style="display: none;">
+      <a href="#" id="forgot-password-link">Forgot password?</a>
+    </div>
+
+    <button id="submit-btn">
+      <span id="btn-text">Sign Up</span>
+      <div class="spinner" id="spinner"></div>
+    </button>
 
     <div class="error" id="error-message"></div>
+    <div class="success" id="success-message"></div>
 
     <div class="switch">
-      <a href="javascript:void(0);" id="switch-btn">Already have an account? Login</a>
+      <a href="#" id="switch-btn"><i class="fas fa-exchange-alt"></i> Already have an account? Login</a>
     </div>
   </div>
 
   <script type="module">
     // Import necessary Firebase modules
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+    import { 
+      initializeApp, 
+      deleteApp 
+    } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+    
+    import { 
+      getAuth, 
+      createUserWithEmailAndPassword, 
+      signInWithEmailAndPassword, 
+      sendEmailVerification, 
+      onAuthStateChanged,
+      GoogleAuthProvider,
+      sendPasswordResetEmail
+    } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 
     // Firebase configuration
     const firebaseConfig = {
@@ -361,49 +445,68 @@ body {
       appId: "1:884362596684:web:ac2863e42454050d2e7fe9"
     };
 
-    // Initialize Firebase app
+    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    // Listen for changes in authentication state
-    onAuthStateChanged(auth, (user) => {
-      if (user && user.emailVerified) {
-        // If the user is authenticated and email is verified, redirect to "here.html"
-        window.location.href = "here.html";
-      }
+    // Provider
+    const googleProvider = new GoogleAuthProvider();
+
+    // DOM Elements
+    const themeToggle = document.getElementById('themeToggle');
+    const submitBtn = document.getElementById('submit-btn');
+    const btnText = document.getElementById('btn-text');
+    const spinner = document.getElementById('spinner');
+    const forgotPasswordLink = document.getElementById('forgot-password-link');
+
+    // Theme management
+    function toggleTheme() {
+      const currentTheme = document.body.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      document.body.setAttribute('data-theme', newTheme);
+      
+      const icon = themeToggle.querySelector('i');
+      icon.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+      
+      localStorage.setItem('theme', newTheme);
+    }
+
+    // Set initial theme
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedTheme = localStorage.getItem('theme') || 'light';
+      document.body.setAttribute('data-theme', savedTheme);
+      
+      const icon = themeToggle.querySelector('i');
+      icon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+      
+      // Prevent zoom on input focus on mobile
+      document.addEventListener('focusin', function() {
+        if (window.innerWidth <= 768) {
+          window.scrollTo(0, 0);
+          document.body.style.transform = 'scale(1)';
+        }
+      });
     });
 
-    // Sign-Up Function
-    async function signUp(email, password) {
-      try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
-        await sendEmailVerification(user); // Send email verification
-        alert("Sign-up successful! Please verify your email.");
-      } catch (error) {
-        handleError(error); // Show custom error message
-      }
+    // Show loading state
+    function showLoading() {
+      btnText.style.display = 'none';
+      spinner.style.display = 'block';
+      submitBtn.disabled = true;
     }
 
-    // Login Function
-    async function login(email, password) {
-      try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
-        if (user.emailVerified) {
-          alert("Login successful!");
-          window.location.href = "here.html"; // Redirect to 'here.html'
-        } else {
-          alert("Please verify your email first!");
-        }
-      } catch (error) {
-        handleError(error); // Show custom error message
-      }
+    // Hide loading state
+    function hideLoading() {
+      btnText.style.display = 'block';
+      spinner.style.display = 'none';
+      submitBtn.disabled = false;
     }
 
-    // Handle Error Messages
+    // Handle error messages
     function handleError(error) {
+      hideLoading();
       let errorMessage = '';
+      
       switch (error.code) {
         case 'auth/invalid-email':
           errorMessage = 'The email address is not valid.';
@@ -421,26 +524,125 @@ body {
           errorMessage = 'This email is already in use. Please log in.';
           break;
         case 'auth/weak-password':
-          errorMessage = 'The password is too weak. Please choose a stronger password.';
+          errorMessage = 'The password is too weak (min 6 characters).';
           break;
         case 'auth/network-request-failed':
           errorMessage = 'Network error. Please check your internet connection.';
           break;
+        case 'auth/too-many-requests':
+          errorMessage = 'Too many attempts. Please try again later.';
+          break;
+        case 'auth/account-exists-with-different-credential':
+          errorMessage = 'Account exists with different login method.';
+          break;
+        case 'auth/popup-closed-by-user':
+          errorMessage = 'Login popup was closed before completion.';
+          break;
         default:
-          errorMessage = 'An unknown error occurred. Please try again later.';
+          errorMessage = 'An error occurred. Please try again.';
+          console.error(error);
       }
+      
       document.getElementById('error-message').textContent = errorMessage;
+      setTimeout(() => {
+        document.getElementById('error-message').textContent = '';
+      }, 5000);
     }
 
-    // Handle Submit Button (for Sign Up or Login)
-    document.getElementById("submit-btn").addEventListener("click", async () => {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
+    // Handle success messages
+    function showSuccess(message) {
+      document.getElementById('success-message').textContent = message;
+      setTimeout(() => {
+        document.getElementById('success-message').textContent = '';
+      }, 5000);
+    }
 
-      if (document.getElementById("form-title").textContent === "Sign Up") {
-        const passwordConfirm = document.getElementById("password-confirm").value;
+    // Sign up with email/password
+    async function signUp(email, password) {
+      try {
+        showLoading();
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        await sendEmailVerification(userCredential.user);
+        showSuccess('Sign up successful! Please check your email for verification.');
+        // Clear form
+        document.getElementById('email').value = '';
+        document.getElementById('password').value = '';
+        document.getElementById('password-confirm').value = '';
+      } catch (error) {
+        handleError(error);
+      } finally {
+        hideLoading();
+      }
+    }
+
+    // Login with email/password
+    async function login(email, password) {
+      try {
+        showLoading();
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        
+        if (!user.emailVerified) {
+          await sendEmailVerification(user);
+          throw { code: 'auth/email-not-verified' };
+        }
+        
+        // Redirect on successful login
+        window.location.href = "here.html";
+      } catch (error) {
+        if (error.code === 'auth/email-not-verified') {
+          handleError({ code: 'auth/email-not-verified', message: 'Please verify your email first. A new verification email has been sent.' });
+        } else {
+          handleError(error);
+        }
+      } finally {
+        hideLoading();
+      }
+    }
+
+    // Social login handler
+    async function socialLogin(provider) {
+      try {
+        showLoading();
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+        
+        // Redirect on successful login
+        window.location.href = "here.html";
+      } catch (error) {
+        handleError(error);
+      } finally {
+        hideLoading();
+      }
+    }
+
+    // Password reset
+    async function resetPassword(email) {
+      try {
+        showLoading();
+        await sendPasswordResetEmail(auth, email);
+        showSuccess('Password reset email sent. Please check your inbox.');
+      } catch (error) {
+        handleError(error);
+      } finally {
+        hideLoading();
+      }
+    }
+
+    // Form submission handler
+    submitBtn.addEventListener("click", async () => {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+      
+      if (!email || !password) {
+        handleError({ code: 'auth/missing-fields' });
+        return;
+      }
+
+      if (document.getElementById("form-title").textContent.includes("Sign Up")) {
+        const passwordConfirm = document.getElementById("password-confirm").value.trim();
         if (password !== passwordConfirm) {
-          document.getElementById('error-message').textContent = "Passwords do not match!";
+          handleError({ code: 'auth/password-mismatch' });
           return;
         }
         await signUp(email, password);
@@ -449,15 +651,72 @@ body {
       }
     });
 
-    // Switch between Login and Sign Up forms
-    document.getElementById("switch-btn").addEventListener("click", () => {
-      const isLogin = document.getElementById("form-title").textContent === "Login";
-      document.getElementById("form-title").textContent = isLogin ? "Sign Up" : "Login";
-      document.getElementById("submit-btn").textContent = isLogin ? "Sign Up" : "Login";
+    // Switch between login/signup forms
+    document.getElementById("switch-btn").addEventListener("click", (e) => {
+      e.preventDefault();
+      const isLogin = document.getElementById("form-title").textContent.includes("Login");
+      
+      document.getElementById("form-title").innerHTML = isLogin 
+        ? '<i class="fas fa-user-plus"></i> Sign Up' 
+        : '<i class="fas fa-sign-in-alt"></i> Login';
+      
+      document.getElementById("btn-text").textContent = isLogin ? "Sign Up" : "Login";
       document.getElementById("password-confirm-group").style.display = isLogin ? "block" : "none";
-      document.getElementById("switch-btn").textContent = isLogin ? "Already have an account? Login" : "Don’t have an account? Sign Up";
+      document.getElementById("username-group").style.display = "none";
+      document.getElementById("forgot-password").style.display = isLogin ? "none" : "block";
+      document.getElementById("switch-btn").innerHTML = isLogin 
+        ? '<i class="fas fa-exchange-alt"></i> Already have an account? Login' 
+        : '<i class="fas fa-exchange-alt"></i> Don\'t have an account? Sign Up';
+      
+      document.getElementById("error-message").textContent = "";
     });
-  </script>
 
+    // Social login event listener
+    document.getElementById("googleLogin").addEventListener("click", () => socialLogin(googleProvider));
+
+    // Forgot password
+    forgotPasswordLink.addEventListener("click", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("email").value.trim();
+      
+      if (!email) {
+        handleError({ code: 'auth/missing-email' });
+        return;
+      }
+      
+      await resetPassword(email);
+    });
+
+    // Theme toggle
+    themeToggle.addEventListener('click', toggleTheme);
+
+    // Check auth state
+    onAuthStateChanged(auth, (user) => {
+      if (user && user.emailVerified) {
+        window.location.href = "here.html";
+      }
+    });
+
+    // Custom error codes
+    const customErrors = {
+      'auth/password-mismatch': 'Passwords do not match!',
+      'auth/missing-fields': 'Please fill in all fields.',
+      'auth/missing-email': 'Please enter your email address to reset password.',
+      'auth/email-not-verified': 'Please verify your email first. Check your inbox.'
+    };
+
+    // Extend handleError to include custom errors
+    const originalHandleError = handleError;
+    handleError = (error) => {
+      if (customErrors[error.code]) {
+        document.getElementById('error-message').textContent = customErrors[error.code];
+        setTimeout(() => {
+          document.getElementById('error-message').textContent = '';
+        }, 5000);
+      } else {
+        originalHandleError(error);
+      }
+    };
+  </script>
 </body>
 </html>
